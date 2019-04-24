@@ -1,0 +1,11 @@
+.layout {
+    min-height: 100vh;
+}
+.spin {
+    opacity: 1;
+    :global {
+        .ant-spin-blur {
+            opacity: 0;
+        }
+    }
+}

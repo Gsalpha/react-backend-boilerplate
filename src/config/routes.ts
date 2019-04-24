@@ -17,7 +17,12 @@ export const Routes: IRoute[] = [
                 ),
                 routes: [
                     {
-                        path: '/dashboard/analysis/x'
+                        path: '/dashboard/analysis/x',
+                        component: Dynamic(() =>
+                            import(
+                                /*webpackChunkName:"dashboard-analysis"*/ '@/pages/dashboard/analysis'
+                            )
+                        )
                     }
                 ]
             }

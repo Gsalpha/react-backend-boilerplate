@@ -16,10 +16,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     login: (payload: ILoginPayload) => dispatch(loginAction(payload))
 })
 
-interface IProps extends FormComponentProps<ILoginPayload> {
-    login: typeof loginAction
-    loading: boolean
-}
+interface IProps
+    extends FormComponentProps<ILoginPayload>,
+        ReturnType<typeof mapStateToProps>,
+        ReturnType<typeof mapDispatchToProps> {}
 
 const rules = {
     username: [

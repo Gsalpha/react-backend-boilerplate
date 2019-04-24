@@ -1,16 +1,15 @@
-export enum Loading {
-    login = 'login'
-}
+import { Prefix } from '@/config/prefix'
 
 export interface ISetLoadingPayload {
-    scope: Loading
+    scope: Prefix
     loading: boolean
 }
 
-type TLoadingState = { [O in Loading]: boolean }
+type TLoadingState = { [O in Prefix]: boolean }
 
 const initialState: TLoadingState = {
-    login: false
+    login: false,
+    auth: true
 }
 
 export const setLoadingAction = ({ scope, loading }: ISetLoadingPayload) => ({

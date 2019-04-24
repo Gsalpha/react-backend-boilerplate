@@ -17,7 +17,11 @@ const PrivateRoute: FunctionComponent<IPrivateRouteProps> = ({
         <Route
             {...rest}
             render={(props: RouteComponentProps) => {
-                return isAuthorized ? <Component {...props} /> : ''
+                return isAuthorized ? (
+                    <Component {...props} />
+                ) : (
+                    <p>unauthorized</p>
+                )
             }}
         />
     )

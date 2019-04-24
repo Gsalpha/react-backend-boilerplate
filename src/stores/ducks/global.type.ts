@@ -1,7 +1,7 @@
 export interface IGlobalState {
     token: string
     username: string
-    routes: IRoute[]
+    routes: string[]
 }
 
 export interface ILoginPayload {
@@ -17,10 +17,16 @@ export interface IErrorPayload {
     error: string
 }
 
+export interface IAuthSucPayload {
+    username: string
+    routes: string[]
+}
+
 export enum actionTypes {
-    LOGIN = 'global/login',
     LOGIN_SUC = 'global/login-suc',
-    LOGIN_FAIL = 'global/login-fail'
+    LOGIN_FAIL = 'global/login-fail',
+    AUTH_SUC = 'global/auth-suc',
+    AUTH_FAIL = 'global/auth-fail'
 }
 
 export interface ILoginSucAction {
@@ -33,4 +39,18 @@ export interface ILoginFailAction {
     payload: IErrorPayload
 }
 
-export type AllActions = ILoginSucAction | ILoginFailAction
+export interface IAuthSucAction {
+    type: actionTypes.AUTH_SUC
+    payload: IAuthSucPayload
+}
+
+export interface IAuthFailAction {
+    type: actionTypes.AUTH_FAIL
+    payload: IErrorPayload
+}
+
+export type AllActions =
+    | ILoginSucAction
+    | ILoginFailAction
+    | IAuthSucAction
+    | IAuthFailAction

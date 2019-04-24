@@ -1,6 +1,9 @@
 import {
     actionTypes,
     AllActions,
+    IAuthFailAction,
+    IAuthSucAction,
+    IAuthSucPayload,
     IErrorPayload,
     IGlobalState,
     ILoginPayload,
@@ -9,11 +12,12 @@ import {
 } from '@/stores/ducks/global.type'
 import { ThunkAction } from 'redux-thunk'
 import { Action } from 'redux'
-import { Loading, setLoadingAction } from '@/stores/ducks/loading'
-import { login } from '@/services/global'
+import { setLoadingAction } from '@/stores/ducks/loading'
+import { auth, login } from '@/services/global'
 import { notification } from 'antd'
 import { AppState } from '@/stores/create'
 import { replace } from 'connected-react-router'
+import { Prefix } from '@/config/prefix'
 
 // Action Creators
 const loginSucAction = (payload: ILoginSucPayload): ILoginSucAction => ({
@@ -26,13 +30,23 @@ const loginFailAction = (payload: IErrorPayload) => ({
     payload
 })
 
+const authSucAction = (payload: IAuthSucPayload): IAuthSucAction => ({
+    type: actionTypes.AUTH_SUC,
+    payload
+})
+
+const authFailAction = (payload: IErrorPayload): IAuthFailAction => ({
+    type: actionTypes.AUTH_FAIL,
+    payload
+})
+
 // Side effects
 export const loginAction = (
     payload: ILoginPayload
 ): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
     dispatch(
         setLoadingAction({
-            scope: Loading.login,
+            scope: Prefix.login,
             loading: true
         })
     )
@@ -44,7 +58,7 @@ export const loginAction = (
         dispatch(loginSucAction({ token }))
         dispatch(
             setLoadingAction({
-                scope: Loading.login,
+                scope: Prefix.login,
                 loading: false
             })
         )
@@ -52,7 +66,7 @@ export const loginAction = (
     } catch (e) {
         dispatch(
             setLoadingAction({
-                scope: Loading.login,
+                scope: Prefix.login,
                 loading: false
             })
         )
@@ -64,6 +78,48 @@ export const loginAction = (
     }
 }
 
+export const authAction = (): ThunkAction<
+    void,
+    AppState,
+    null,
+    Action<string>
+> => async dispatch => {
+    dispatch(
+        setLoadingAction({
+            scope: Prefix.auth,
+            loading: true
+        })
+    )
+    try {
+        const {
+            data: { username, routes }
+        } = await auth()
+        dispatch(
+            authSucAction({
+                username,
+                routes
+            })
+        )
+        dispatch(
+            setLoadingAction({
+                scope: Prefix.auth,
+                loading: false
+            })
+        )
+    } catch (e) {
+        dispatch(
+            setLoadingAction({
+                scope: Prefix.auth,
+                loading: false
+            })
+        )
+        dispatch(authFailAction(e))
+        notification.error({
+            message: '或其基本信息失败',
+            description: e.message
+        })
+    }
+}
 // reducers
 const initialState: IGlobalState = {
     token: '',
@@ -77,6 +133,10 @@ export default (state = initialState, action: AllActions) => {
             return { ...state, token: '', username: '', routes: [] }
         case actionTypes.LOGIN_SUC:
             return { ...state, token: action.payload.token }
+        case actionTypes.AUTH_FAIL:
+            return { ...state, token: '', username: '', routes: [] }
+        case actionTypes.AUTH_SUC:
+            return { ...state, ...action.payload }
         default:
             return state
     }
