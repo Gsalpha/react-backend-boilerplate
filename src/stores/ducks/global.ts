@@ -13,6 +13,7 @@ import { Loading, setLoadingAction } from '@/stores/ducks/loading'
 import { login } from '@/services/global'
 import { notification } from 'antd'
 import { AppState } from '@/stores/create'
+import { replace } from 'connected-react-router'
 
 // Action Creators
 const loginSucAction = (payload: ILoginSucPayload): ILoginSucAction => ({
@@ -47,6 +48,7 @@ export const loginAction = (
                 loading: false
             })
         )
+        dispatch(replace('/'))
     } catch (e) {
         dispatch(
             setLoadingAction({
