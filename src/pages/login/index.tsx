@@ -3,15 +3,22 @@ import { Button, Form, Input } from 'antd'
 import style from './index.module.scss'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import Document from 'react-document-title'
+import { connect } from 'react-redux'
+import { AppState } from '@/stores/create'
+import { loginAction } from '@/stores/ducks/global'
+import { ILoginPayload } from '@/stores/ducks/global.type'
 
 const { Item, create } = Form
-interface IProps extends FormComponentProps<IPayload> {
-    loading: boolean
-}
 
-interface IPayload {
-    username: string
-    password: string
+const mapStateToProps = (state: AppState) => ({ loading: state.loading.login })
+
+const mapDispatchToProps = (dispatch: any) => ({
+    login: (payload: ILoginPayload) => dispatch(loginAction(payload))
+})
+
+interface IProps extends FormComponentProps<ILoginPayload> {
+    login: typeof loginAction
+    loading: boolean
 }
 
 const rules = {
@@ -28,12 +35,13 @@ const rules = {
         }
     ]
 }
-const Login: FunctionComponent<IProps> = ({ form, loading }) => {
+const Login: FunctionComponent<IProps> = ({ form, loading, login }) => {
     const { getFieldDecorator, validateFields } = form
     const submit = () => {
-        validateFields((error, paylold) => {
+        validateFields((error, payload) => {
             if (!error) {
-                console.log(paylold)
+                console.log(payload)
+                login(payload)
             }
         })
     }
@@ -85,4 +93,7 @@ const Login: FunctionComponent<IProps> = ({ form, loading }) => {
     )
 }
 
-export default create()(memo(Login))
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(create()(memo(Login)))
