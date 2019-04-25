@@ -1,4 +1,6 @@
-export const formateMenu = (routes: IRoute[]) =>
+import { Routes } from '@/config/routes'
+
+const formateMenu = (routes: IRoute[]) =>
     routes
         .filter(route => route.name && !route.hide)
         .map(route => formateSubMenu(route))
@@ -27,9 +29,42 @@ export const flatRoutes = (routes: IRoute[]): IRoute[] => {
     routes.forEach(item => {
         if (item.routes && item.routes.length) {
             flat(item)
+        } else {
+            result.push(item)
         }
     })
     return result
+}
+const filterMatchRouters = (
+    routes: IRoute[],
+    mapping: { [propName: string]: true }
+) => {
+    let matches: IRoute[] = [...routes]
+    matches.forEach((route, index) => {
+        const currentRoute = `${route.path}`
+        if (mapping[currentRoute] && route) {
+            if (route.routes && route.routes.length) {
+                route.routes = [...filterMatchRouters(route.routes, mapping)]
+            }
+        } else {
+            if (route.routes && route.routes.length) {
+                route.routes = [...filterMatchRouters(route.routes, mapping)]
+            } else {
+                matches.splice(index, 1)
+            }
+        }
+    })
+    return matches
+}
+export const getFilteredMenusFromPermissionRoute = (
+    routes: string[]
+): IRoute[] => {
+    const mapping: { [propName: string]: true } = {}
+    for (let route of routes) {
+        mapping[route] = true
+    }
+    console.log(mapping)
+    return filterMatchRouters(formateMenu(Routes), mapping)
 }
 
 export const formateBreadcrumb = (routers: IRoute[]) => {

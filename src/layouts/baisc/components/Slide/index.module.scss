@@ -1,0 +1,66 @@
+.menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: url('./sidebar.jpg') center no-repeat;
+    background-size: cover;
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42),
+        0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.93);
+    }
+
+    h1 {
+        margin-left: 10px;
+        margin-right: 10px;
+        border-bottom: 1px solid hsla(0, 0%, 71%, 0.3);
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 64px;
+        z-index: 4;
+        color: #3c4858;
+        font-weight: bold;
+        font-size: 16px;
+
+        img {
+            margin-right: 10px;
+            height: 24px;
+        }
+    }
+}
+
+.ctx {
+    position: relative;
+    z-index: 2;
+    border-right: none;
+    background-color: transparent;
+}
+
+.wrapper-drawer {
+    z-index: 0;
+
+    :global {
+        .ant-drawer-body {
+            padding: 64px 0 0;
+        }
+    }
+}
+
+.span {
+    flex: 1 0 auto;
+
+    a {
+        display: block;
+    }
+}

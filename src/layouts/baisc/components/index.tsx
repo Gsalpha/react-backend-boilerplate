@@ -1,24 +1,74 @@
-import React, { FunctionComponent, memo, useEffect, useMemo } from 'react'
-import { Redirect, Switch } from 'react-router-dom'
-import { flatRoutes } from '@/utils/route'
+import React, {
+    FunctionComponent,
+    memo,
+    useEffect,
+    useMemo,
+    useState
+} from 'react'
+import { Link, Redirect, Switch } from 'react-router-dom'
+import {
+    flatRoutes,
+    formateBreadcrumb,
+    getFilteredMenusFromPermissionRoute
+} from '@/utils/route'
 import { Routes } from '@/config/routes'
 import PrivateRoute from '@/components/PrivateRoute'
-import { Spin, Icon } from 'antd'
+import { Spin, Icon, Breadcrumb } from 'antd'
 import style from './index.module.scss'
 import { IProps } from '@/layouts/baisc'
 import Header from './Header'
-const antIcon = <Icon type="loading" style={{ fontSize: 80 }} spin />
+import Slide from './Slide'
+import Document from 'react-document-title'
 
+const antIcon = <Icon type="loading" style={{ fontSize: 80 }} spin />
 const routes = flatRoutes(Routes)
+const breadcrumb = formateBreadcrumb(Routes)
+
 const Basic: FunctionComponent<IProps> = ({
     loading,
     username,
+    location: { pathname },
     routes: authRoutes,
     auth
 }) => {
+    const [menuDrawerVisible, setMenuDrawerVisible] = useState(false)
+    const renderTitle = () => {
+        const target = routes.find(route => route.path === pathname)
+        return target && target.name
+            ? `${target.name} - ${process.env.REACT_APP_NAME}`
+            : (process.env.REACT_APP_NAME as string)
+    }
+    const onChange = () =>
+        setMenuDrawerVisible(menuDrawerVisible => !menuDrawerVisible)
+    const pathSnippets = useMemo(() => pathname.split('/').filter(i => i), [
+        pathname
+    ])
+    const extraBreadcrumbItems = useMemo(
+        () => [
+            <Breadcrumb.Item key="home">
+                <Link to="/">
+                    <Icon type="home" />
+                </Link>
+            </Breadcrumb.Item>,
+            ...pathSnippets.map((_, index) => {
+                const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
+                return (
+                    breadcrumb[url] && (
+                        <Breadcrumb.Item key={url}>
+                            <Link to={url}>{breadcrumb[url].name}</Link>
+                        </Breadcrumb.Item>
+                    )
+                )
+            })
+        ],
+        [pathSnippets]
+    )
     useEffect(() => {
         auth()
     }, [])
+    const authMenus = useMemo(() => {
+        return getFilteredMenusFromPermissionRoute(authRoutes)
+    }, [authRoutes])
     const renderRoutes = useMemo(
         () =>
             routes.map(route => {
@@ -48,16 +98,28 @@ const Basic: FunctionComponent<IProps> = ({
         [authRoutes]
     )
     return (
-        <Spin
-            indicator={antIcon}
-            spinning={loading}
-            wrapperClassName={style.spin}
-        >
-            <section className={style.layout}>
-                <Header username={username} />
-                <Switch>{renderRoutes}</Switch>
-            </section>
-        </Spin>
+        <Document title={renderTitle()}>
+            <Spin
+                indicator={antIcon}
+                spinning={loading}
+                wrapperClassName={style.spin}
+            >
+                <section className={style.layout}>
+                    <Header username={username} onChange={onChange} />
+                    <Slide
+                        menus={authMenus}
+                        visibie={menuDrawerVisible}
+                        onChange={onChange}
+                    />
+                    <section className={style.container}>
+                        <Breadcrumb>{extraBreadcrumbItems}</Breadcrumb>
+                        <section className={style.content}>
+                            <Switch>{renderRoutes}</Switch>
+                        </section>
+                    </section>
+                </section>
+            </Spin>
+        </Document>
     )
 }
 
