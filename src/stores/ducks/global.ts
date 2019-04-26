@@ -8,7 +8,8 @@ import {
     IGlobalState,
     ILoginPayload,
     ILoginSucAction,
-    ILoginSucPayload
+    ILoginSucPayload,
+    ILogoutSucAction
 } from '@/stores/ducks/global.type'
 import { ThunkAction } from 'redux-thunk'
 import { Action } from 'redux'
@@ -16,13 +17,18 @@ import { setLoadingAction } from '@/stores/ducks/loading'
 import { auth, login } from '@/services/global'
 import { notification } from 'antd'
 import { AppState } from '@/stores/create'
-import { replace } from 'connected-react-router'
 import { Prefix } from '@/config/prefix'
+import { replace } from 'connected-react-router'
+import { isLogined } from '@/utils'
 
 // Action Creators
 const loginSucAction = (payload: ILoginSucPayload): ILoginSucAction => ({
     type: actionTypes.LOGIN_SUC,
     payload
+})
+
+const logoutSucAction = (): ILogoutSucAction => ({
+    type: actionTypes.LOGOUT
 })
 
 const loginFailAction = (payload: IErrorPayload) => ({
@@ -63,6 +69,7 @@ export const loginAction = (
             })
         )
         dispatch(replace('/'))
+        // window.location.replace('/')
     } catch (e) {
         dispatch(
             setLoadingAction({
@@ -84,55 +91,86 @@ export const authAction = (): ThunkAction<
     null,
     Action<string>
 > => async dispatch => {
-    dispatch(
-        setLoadingAction({
-            scope: Prefix.auth,
-            loading: true
-        })
-    )
-    try {
-        const {
-            data: { username, routes }
-        } = await auth()
-        dispatch(
-            authSucAction({
-                username,
-                routes
-            })
-        )
+    if (!isLogined()) {
+        if (window.location.href.indexOf('login') === -1) {
+            dispatch(replace('/login'))
+        } else {
+            dispatch(
+                setLoadingAction({
+                    scope: Prefix.auth,
+                    loading: false
+                })
+            )
+        }
+    } else {
         dispatch(
             setLoadingAction({
                 scope: Prefix.auth,
-                loading: false
+                loading: true
             })
         )
-    } catch (e) {
-        dispatch(
-            setLoadingAction({
-                scope: Prefix.auth,
-                loading: false
+        try {
+            const {
+                data: { username, routes }
+            } = await auth()
+            dispatch(
+                authSucAction({
+                    username,
+                    routes
+                })
+            )
+            dispatch(
+                setLoadingAction({
+                    scope: Prefix.auth,
+                    loading: false
+                })
+            )
+            if (window.location.href.indexOf('login') > -1) {
+                dispatch(replace('/'))
+            }
+        } catch (e) {
+            dispatch(
+                setLoadingAction({
+                    scope: Prefix.auth,
+                    loading: false
+                })
+            )
+            localStorage.setItem('token', '')
+            if (window.location.href.indexOf('login') === -1) {
+                dispatch(replace('/login'))
+            }
+            dispatch(authFailAction(e))
+            notification.error({
+                message: '获取基本信息',
+                description: e.message
             })
-        )
-        dispatch(authFailAction(e))
-        notification.error({
-            message: '或其基本信息失败',
-            description: e.message
-        })
+        }
     }
+}
+
+export const logoutAction = (): ThunkAction<
+    void,
+    AppState,
+    null,
+    Action<string>
+> => dispatch => {
+    dispatch(logoutSucAction())
+    localStorage.setItem('token', '')
+    dispatch(replace('/login'))
 }
 // reducers
 const initialState: IGlobalState = {
-    token: '',
+    token: localStorage.getItem('token') || '',
     username: '',
     routes: []
 }
 
 export default (state = initialState, action: AllActions) => {
     switch (action.type) {
-        case actionTypes.LOGIN_FAIL:
-            return { ...state, token: '', username: '', routes: [] }
         case actionTypes.LOGIN_SUC:
             return { ...state, token: action.payload.token }
+        case actionTypes.LOGIN_FAIL:
+        case actionTypes.LOGOUT:
         case actionTypes.AUTH_FAIL:
             return { ...state, token: '', username: '', routes: [] }
         case actionTypes.AUTH_SUC:

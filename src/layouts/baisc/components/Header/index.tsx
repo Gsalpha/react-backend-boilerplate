@@ -8,23 +8,26 @@ import MediaQuery from 'react-responsive'
 interface IProps {
     username: string
 
+    logout(): void
+
     onChange(): void
 }
 
 const { Item } = Menu
-const menu = (
+const menu = (logout: () => void) => (
     <Menu>
         <Item>
             <Link to="/">首页</Link>
         </Item>
+        <Item onClick={logout}>注销</Item>
     </Menu>
 )
-const Header: FunctionComponent<IProps> = ({ username, onChange }) => (
+const Header: FunctionComponent<IProps> = ({ username, onChange, logout }) => (
     <header className={style.header}>
         <MediaQuery maxWidth={xl}>
             <Icon className={style.icon} type="menu-fold" onClick={onChange} />
         </MediaQuery>
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu(logout)}>
             <section className={style.user}>
                 <Avatar icon="user" />
                 <span className={style.username}>{username}</span>

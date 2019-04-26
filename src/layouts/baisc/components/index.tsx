@@ -29,7 +29,8 @@ const Basic: FunctionComponent<IProps> = ({
     username,
     location: { pathname },
     routes: authRoutes,
-    auth
+    auth,
+    logout
 }) => {
     const [menuDrawerVisible, setMenuDrawerVisible] = useState(false)
     const renderTitle = () => {
@@ -65,37 +66,40 @@ const Basic: FunctionComponent<IProps> = ({
     )
     useEffect(() => {
         auth()
-    }, [])
+    }, [auth])
     const authMenus = useMemo(() => {
         return getFilteredMenusFromPermissionRoute(authRoutes)
     }, [authRoutes])
     const renderRoutes = useMemo(
         () =>
-            routes.map(route => {
-                if (route.redirect) {
-                    return (
-                        <Redirect
-                            exact={true}
-                            from={route.path}
-                            to={route.redirect}
-                            key={route.redirect}
-                        />
-                    )
-                }
-                if (route.component) {
-                    return (
-                        <PrivateRoute
-                            isAuthorized={authRoutes.includes(route.path)}
-                            component={route.component}
-                            path={route.path}
-                            key={route.path}
-                            exact
-                        />
-                    )
-                }
-                return null
-            }),
-        [authRoutes]
+            routes
+                .map(route => {
+                    if (route.redirect) {
+                        return (
+                            <Redirect
+                                exact={true}
+                                from={route.path}
+                                to={route.redirect}
+                                key={route.redirect}
+                            />
+                        )
+                    }
+                    if (route.component) {
+                        return (
+                            <PrivateRoute
+                                isAuthorized={authRoutes.includes(route.path)}
+                                component={route.component}
+                                path={route.path}
+                                key={route.path}
+                                loading={loading}
+                                exact
+                            />
+                        )
+                    }
+                    return null
+                })
+                .concat(<Redirect key="/exception/404" to="/exception/404" />),
+        [authRoutes, loading]
     )
     return (
         <Document title={renderTitle()}>
@@ -105,7 +109,11 @@ const Basic: FunctionComponent<IProps> = ({
                 wrapperClassName={style.spin}
             >
                 <section className={style.layout}>
-                    <Header username={username} onChange={onChange} />
+                    <Header
+                        username={username}
+                        onChange={onChange}
+                        logout={logout}
+                    />
                     <Slide
                         menus={authMenus}
                         visibie={menuDrawerVisible}

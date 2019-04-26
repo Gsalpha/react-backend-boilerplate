@@ -63,7 +63,6 @@ export const getFilteredMenusFromPermissionRoute = (
     for (let route of routes) {
         mapping[route] = true
     }
-    console.log(mapping)
     return filterMatchRouters(formateMenu(Routes), mapping)
 }
 

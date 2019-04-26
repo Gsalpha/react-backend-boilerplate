@@ -3,11 +3,9 @@ import thunkMiddleware from 'redux-thunk'
 import logMiddleware from 'redux-logger'
 import globalReducer from './ducks/global'
 import loadingReducer from './ducks/loading'
-import { createBrowserHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
-
+import history from '@/utils/history'
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const history = createBrowserHistory()
 const rootReducer = combineReducers({
     router: connectRouter(history),
     global: globalReducer,
@@ -16,7 +14,7 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>
 
-export default createStore(
+const store = createStore(
     rootReducer,
     {},
     composeEnhancers(
@@ -27,3 +25,5 @@ export default createStore(
         )
     )
 )
+
+export default store

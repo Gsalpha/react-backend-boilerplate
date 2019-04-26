@@ -26,7 +26,8 @@ export enum actionTypes {
     LOGIN_SUC = 'global/login-suc',
     LOGIN_FAIL = 'global/login-fail',
     AUTH_SUC = 'global/auth-suc',
-    AUTH_FAIL = 'global/auth-fail'
+    AUTH_FAIL = 'global/auth-fail',
+    LOGOUT = 'globa/logout'
 }
 
 export interface ILoginSucAction {
@@ -49,8 +50,13 @@ export interface IAuthFailAction {
     payload: IErrorPayload
 }
 
+export interface ILogoutSucAction {
+    type: actionTypes.LOGOUT
+}
+
 export type AllActions =
     | ILoginSucAction
     | ILoginFailAction
     | IAuthSucAction
     | IAuthFailAction
+    | ILogoutSucAction

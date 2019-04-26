@@ -62,7 +62,7 @@ const Menu: FunctionComponent<{ pathname: string; menus: IRoute[] }> = ({
     useEffect(() => {
         setOpenKeys([getSingleOpenKey()])
         setSelectKeys(getSingleSelectedKeys())
-    }, [pathname])
+    }, [pathname, getSingleOpenKey, getSingleSelectedKeys])
     const handleOpenChange = (openKeys: string[]) => {
         setOpenKeys(openKeys)
     }

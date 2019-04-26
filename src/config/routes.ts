@@ -33,5 +33,29 @@ export const Routes: IRoute[] = [
                 ]
             }
         ]
+    },
+    {
+        path: '/exception/403',
+        name: '403',
+        hide: true,
+        component: Dynamic(() =>
+            import(/*webpackChunkName:"403"*/ '@/pages/exception/403')
+        )
+    },
+    {
+        path: '/exception/404',
+        name: '404',
+        hide: true,
+        component: Dynamic(() =>
+            import(/*webpackChunkName:"403"*/ '@/pages/exception/404')
+        )
+    },
+    {
+        path: '/exception/500',
+        name: '500',
+        hide: true,
+        component: Dynamic(() =>
+            import(/*webpackChunkName:"403"*/ '@/pages/exception/500')
+        )
     }
 ]

@@ -27,3 +27,11 @@
 .loginBtn {
     width: 100%;
 }
+.spin {
+    opacity: 1;
+    :global {
+        .ant-spin-blur {
+            opacity: 0;
+        }
+    }
+}
