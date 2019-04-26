@@ -1,28 +1,31 @@
 import React from 'react'
-import logo from './logo.svg'
-import './App.scss'
 import { hot } from 'react-hot-loader/root'
-import { Button } from 'antd'
+import Dynamic from '@/components/Dynamic'
+import { Route, Switch } from 'react-router-dom'
+import { ConnectedRouter } from 'connected-react-router'
+
+import { Provider } from 'react-redux'
+import store from '@/stores/create'
+import history from '@/utils/history'
+
+const Login = Dynamic(() =>
+    import(/* webpackChunkName:"login" */ '@/pages/login')
+)
+
+const Basic = Dynamic(() =>
+    import(/*webpackChunkName:"basic"*/ '@/layouts/baisc')
+)
 
 function App() {
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <Button type="primary">Test</Button>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <Provider store={store}>
+            <ConnectedRouter history={history}>
+                <Switch>
+                    <Route component={Login} path="/login" exact />
+                    <Route component={Basic} path="/" />
+                </Switch>
+            </ConnectedRouter>
+        </Provider>
     )
 }
 

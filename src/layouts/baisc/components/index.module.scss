@@ -1,0 +1,26 @@
+.layout {
+    min-height: 100vh;
+}
+.spin {
+    opacity: 1;
+    :global {
+        .ant-spin-blur {
+            opacity: 0;
+        }
+    }
+}
+
+.container {
+    transition: all 0.3s ease;
+    padding: 84px 30px 20px;
+    min-height: 100vh;
+    margin-left: 240px;
+}
+@media all and (max-width: 1200px) {
+    .container {
+        margin-left: 0;
+    }
+}
+.content {
+    padding-top: 20px;
+}

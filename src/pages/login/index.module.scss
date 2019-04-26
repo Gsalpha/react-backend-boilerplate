@@ -1,0 +1,37 @@
+.con {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 120px 0;
+    background: url('./bg.svg') center 100px no-repeat;
+    background-size: 100%;
+}
+
+.header {
+    margin-bottom: 28px;
+
+    h1 {
+        font-size: 22px;
+        font-family: 'Futura', 'Helvetica Neue For Number', -apple-system,
+            BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC',
+            'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica,
+            Arial, sans-serif;
+    }
+}
+
+.form {
+    width: 368px;
+}
+.loginBtn {
+    width: 100%;
+}
+.spin {
+    opacity: 1;
+    :global {
+        .ant-spin-blur {
+            opacity: 0;
+        }
+    }
+}
