@@ -3,6 +3,8 @@ import thunkMiddleware from 'redux-thunk'
 import logMiddleware from 'redux-logger'
 import globalReducer from './ducks/global'
 import loadingReducer from './ducks/loading'
+import paginationReducer from './ducks/pagination'
+import tableListReducer from './ducks/table-list'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import history from '@/utils/history'
 
@@ -10,6 +12,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const rootReducer = combineReducers({
     router: connectRouter(history),
     global: globalReducer,
+    tableList: tableListReducer,
+    pagination: paginationReducer,
     loading: loadingReducer
 })
 

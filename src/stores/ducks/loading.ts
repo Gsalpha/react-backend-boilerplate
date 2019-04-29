@@ -5,11 +5,12 @@ export interface ISetLoadingPayload {
     loading: boolean
 }
 
-type TLoadingState = { [O in Prefix]: boolean }
+type TLoadingState = { [O in Prefix]?: boolean }
 
 const initialState: TLoadingState = {
     login: false,
-    auth: true
+    auth: true,
+    tableList: true
 }
 
 export const setLoadingAction = ({ scope, loading }: ISetLoadingPayload) => ({

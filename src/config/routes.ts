@@ -19,18 +19,24 @@ export const Routes: IRoute[] = [
                     import(
                         /*webpackChunkName:"dashboard-analysis"*/ '@/pages/dashboard/analysis'
                     )
-                ),
-                routes: [
-                    {
-                        path: '/dashboard/analysis/x',
-                        name: '呵呵',
-                        component: Dynamic(() =>
-                            import(
-                                /*webpackChunkName:"dashboard-analysis"*/ '@/pages/dashboard/analysis'
-                            )
-                        )
-                    }
-                ]
+                )
+            }
+        ]
+    },
+    {
+        path: '/table',
+        name: '表单页',
+        icon: 'table',
+        redirect: '/table/list',
+        routes: [
+            {
+                path: '/table/list',
+                name: '基础表单',
+                component: Dynamic(() =>
+                    import(
+                        /*webpackChunkName:"table-list"*/ '@/pages/table-list'
+                    )
+                )
             }
         ]
     },
