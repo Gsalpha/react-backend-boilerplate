@@ -91,7 +91,7 @@ const Basic: FunctionComponent<IProps> = ({
                                 component={route.component}
                                 path={route.path}
                                 key={route.path}
-                                loading={loading}
+                                loading={loading!}
                                 exact
                             />
                         )

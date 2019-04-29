@@ -1,4 +1,5 @@
 export enum Prefix {
     login = 'login',
-    auth = 'auth'
+    auth = 'auth',
+    tableList = 'tableList'
 }
