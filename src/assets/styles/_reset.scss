@@ -284,3 +284,10 @@ input[type='button'] {
   overflow: visible;
 }
 
+.ant-table-body {
+  overflow: auto;
+
+  td, th {
+    white-space: pre;
+  }
+}
