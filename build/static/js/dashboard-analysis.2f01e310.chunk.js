@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{524:function(n,e,a){"use strict";a.r(e);var t=a(0),o=a.n(t);e.default=function(){return o.a.createElement("h1",null,"dashboard")}}}]);
-//# sourceMappingURL=dashboard-analysis.2f01e310.chunk.js.map
